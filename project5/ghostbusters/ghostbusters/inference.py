@@ -75,6 +75,26 @@ class DiscreteDistribution(dict):
         {}
         """
         "*** YOUR CODE HERE ***"
+
+        if len(self.keys()) == 0:
+            return None
+
+        total = 0
+        for val in self.values():
+            total += val
+        
+        if total == 0:
+            return None
+        scale = 1/total
+
+        for key in self.keys():
+            self[key] *= scale
+
+        # print("TEST")
+        # print(scale)
+        # print(self.items())
+        return
+
         raiseNotDefined()
 
     def sample(self):
@@ -99,6 +119,18 @@ class DiscreteDistribution(dict):
         0.0
         """
         "*** YOUR CODE HERE ***"
+
+        random_num = random.random()
+
+        norm = self.copy()
+        norm.normalize()
+        cur = 0
+        
+        for key in norm.keys():
+            if cur + norm[key] > random_num:
+                return key
+            cur += norm[key]
+
         raiseNotDefined()
 
 
