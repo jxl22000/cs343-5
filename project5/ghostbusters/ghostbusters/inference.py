@@ -349,7 +349,7 @@ class ExactInference(InferenceModule):
 
         # distribution over new positions for the ghost, given its previous position
         newPosDist = self.getPositionDistribution(gameState, oldPos)
-        raiseNotDefined()
+        # raiseNotDefined()
 
     def getBeliefDistribution(self):
         return self.beliefs
@@ -376,7 +376,16 @@ class ParticleFilter(InferenceModule):
         """
         self.particles = []
         "*** YOUR CODE HERE ***"
-        raiseNotDefined()
+
+        # self.beliefs = DiscreteDistribution()
+        # for p in self.legalPositions:
+        #     self.beliefs[p] = 1.0
+        # self.beliefs.normalize()
+
+        for pos in self.legalPositions:
+            self.particles.append(pos)
+
+        # raiseNotDefined()
 
     def observeUpdate(self, observation, gameState):
         """
@@ -410,7 +419,16 @@ class ParticleFilter(InferenceModule):
         This function should return a normalized distribution.
         """
         "*** YOUR CODE HERE ***"
-        raiseNotDefined()
+
+        self.beliefs = DiscreteDistribution()
+        for particle in self.particles:
+            self.beliefs[particle] = 1.0
+        self.beliefs.normalize()
+
+        return self.beliefs
+        # self.beliefs.normalize()
+
+        # raiseNotDefined()
 
 
 class JointParticleFilter(ParticleFilter):
