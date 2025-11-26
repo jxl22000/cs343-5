@@ -217,7 +217,7 @@ class InferenceModule:
         
         return busters.getObservationProbability(noisyDistance, trueDistance)
 
-        raiseNotDefined()
+        # raiseNotDefined()
 
     def setGhostPosition(self, gameState, ghostPosition, index):
         """
@@ -346,9 +346,18 @@ class ExactInference(InferenceModule):
         current position is known.
         """
         "*** YOUR CODE HERE ***"
-
+        updated = DiscreteDistribution()
+        for ghost in self.allPositions:
+            
+            # ghostPosition = gameState.getGhostPosition(index + 1)
         # distribution over new positions for the ghost, given its previous position
-        newPosDist = self.getPositionDistribution(gameState, oldPos)
+            newPosDist = self.getPositionDistribution(gameState, ghost)
+            for pos, prob in newPosDist.items():
+                updated[pos] += prob * self.beliefs[ghost]
+        updated.normalize()
+        self.beliefs = updated
+
+
         # raiseNotDefined()
 
     def getBeliefDistribution(self):
