@@ -206,12 +206,12 @@ class InferenceModule:
 
         if ghostPosition == jailPosition:
             if noisyDistance == None:
-                return 1
+                return 1.0
             else:
-                return 0
+                return 0.0
             
         if noisyDistance == None:
-            return 0
+            return 0.0
         
         trueDistance = manhattanDistance(pacmanPosition, ghostPosition)
         
@@ -410,7 +410,22 @@ class ParticleFilter(InferenceModule):
         the DiscreteDistribution may be useful.
         """
         "*** YOUR CODE HERE ***"
-        raiseNotDefined()
+        pacmanPosition = gameState.getPacmanPosition()
+        jailPosition = self.getJailPosition()
+        dist = DiscreteDistribution()
+        for particle in self.particles:
+            prob = self.getObservationProb(observation, pacmanPosition, particle, jailPosition)
+            dist[particle] += prob
+        # If all weights are zero, reinitialize
+        if dist.total() == 0:
+            self.initializeUniformly(gameState)
+            return
+        dist.normalize()
+        newParticles = []
+        for _ in range(self.numParticles):
+            newParticle = dist.sample()
+            newParticles.append(newParticle)
+        self.particles = newParticles
 
     def elapseTime(self, gameState):
         """
@@ -430,16 +445,11 @@ class ParticleFilter(InferenceModule):
         """
         "*** YOUR CODE HERE ***"
 
-        self.beliefs = DiscreteDistribution()
+        dist = DiscreteDistribution()
         for particle in self.particles:
-            self.beliefs[particle] = 1.0
-        self.beliefs.normalize()
-
-        return self.beliefs
-        # self.beliefs.normalize()
-
-        # raiseNotDefined()
-
+            dist[particle] += 1.0
+        dist.normalize()
+        return dist
 
 class JointParticleFilter(ParticleFilter):
     """
